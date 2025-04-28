@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chirp Recorder & Plotter (Raw Audio - Pixel Density Plot)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-100">
+
+  <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-3xl">
+    <h1 class="text-2xl font-bold mb-6 text-center text-gray-800">Acoustic Response Analyzer (Max/RMS per Pixel)</h1>
+
+    <div class="flex justify-center mb-6">
+      <button id="startButton"
+        class="custom-button bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed">
+        Start Chirp & Record
+      </button>
+    </div>
+
+    <div id="status" class="text-center text-gray-600 mb-6 h-6"></div>
+
+    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+      <p class="text-sm text-gray-500 mb-2 text-center">Max & RMS Recorded Audio Magnitude vs. Chirp Frequency</p>
+      <canvas id="plotCanvas"></canvas>
+    </div>
+    <p class="text-xs text-gray-400 mt-4 text-center">Note: Requires microphone permission. Ensure volume is adequate.
+      Audio processing disabled.</p>
+  </div>
+
+
+  <script src="script.js"></script>
+</body>
+
+</html>
