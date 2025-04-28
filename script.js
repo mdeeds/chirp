@@ -25,10 +25,21 @@ function initializeChart() {
   if (chartInstance) {
     chartInstance.destroy();
   }
+
+  const customXTicks = [
+    // Add all the specific frequency values you want ticks for
+    20, 30, 60,
+    100, 200, 300, 600,
+    1000, 2000, 3000, 6000,
+    10000, 20000
+    // Example: If you wanted 1, 3, 6, 10... you'd list them here:
+    // 1, 3, 6, 10, 30, 60, 100, 300, 600, 1000, 3000, 6000, 10000 ...
+    // Adjust this list based on the exact ticks you need within your START_FREQ/END_FREQ range
+  ];
+
   chartInstance = new Chart(ctx, {
     type: 'scatter',
     data: {
-      // *** MODIFICATION START: Define two datasets ***
       datasets: [
         {
           label: 'Max Value (dB)',
@@ -49,7 +60,6 @@ function initializeChart() {
           showLine: false, // Keep as scatter points
         }
       ]
-      // *** MODIFICATION END ***
     },
     options: {
       responsive: true,
@@ -61,15 +71,31 @@ function initializeChart() {
           min: START_FREQ_HZ,
           max: END_FREQ_HZ,
           ticks: {
-            callback: function (value, index, values) {
-              const logVal = Math.log10(value);
-              if (logVal === Math.floor(logVal)) {
-                if (value >= 1000) return (value / 1000) + 'k';
-                return value;
+            // --- Modify the callback function ---
+            callback: function (value, index, ticks) {
+              // Check if the current tick value is close to one of our custom values
+              // Use a small tolerance due to potential floating point inaccuracies
+              const tolerance = 0.01;
+              const isCustomTick = customXTicks.some(customTick =>
+                Math.abs(value - customTick) < tolerance * customTick // Relative tolerance
+              );
+
+              if (isCustomTick) {
+                // Format the label as needed (e.g., add 'k' for thousands)
+                if (value >= 1000) {
+                  return (value / 1000) + 'k';
+                }
+                return value.toString(); // Return the number as a string
+              } else {
+                // Return null or undefined to hide the label for this tick
+                return null;
               }
-              return null;
             },
-            maxTicksLimit: 5
+            // --- Remove or comment out maxTicksLimit ---
+            // maxTicksLimit: 15, // This might prevent Chart.js from generating ticks near your custom values
+            autoSkip: false, // Prevent Chart.js from automatically skipping ticks
+            maxRotation: 0, // Keep labels horizontal
+            minRotation: 0
           },
           grid: { color: 'rgba(200, 200, 200, 0.2)' }
         },
@@ -93,7 +119,6 @@ function initializeChart() {
             }
           }
         },
-        // *** MODIFICATION START: Enable Legend ***
         legend: {
           display: true, // Show legend for the two datasets
           position: 'top',
@@ -103,7 +128,6 @@ function initializeChart() {
             font: { size: 10 }
           }
         }
-        // *** MODIFICATION END ***
       },
       animation: false,
       parsing: false,
